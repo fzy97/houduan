@@ -5,11 +5,12 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.db.models import Q
 from houduan.models import *
-
+import json
 
 def register(request):
     result = {"content": ""}
     if request.method == "POST":
+
         username = request.POST.get("username")
         password = request.POST.get("password")
         if username and password:
@@ -26,22 +27,27 @@ def register(request):
 def login(request):
     result = {"content": ""}
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        login_dict = json.loads((request.body).decode("utf-8"))
+        username = str(login_dict["username"])
+        password = str(login_dict["password"])
+        #username = request.POST.get("username")
+        #password = request.POST.get("password")
+        print(username, password)
         if username and password:
             user = loginuser.objects.filter(username=username).first()
             if user:
                 if password == user.password:
-                    response = HttpResponseRedirect("/index/")
-                    response.set_cookie("username", user.username)
-                    return response
+                    #response = HttpResponseRedirect("/index/")
+                    #response.set_cookie("username", user.username)
+                    return JsonResponse('ok')
                 else:
-                    result["content"] = "密码错误"
+                    return JsonResponse('fail_password')
             else:
-                result["content"] = "用户名不存在"
+                return JsonResponse('fail_user')
         else:
-            result["content"] = "用户名或密码不可以为空"
-    return render(request, "login.html", locals())
+            return JsonResponse('fail_null')
+    #return render(request, "login.html", locals())
+    return JsonResponse('fail_request')
 
 
 def logout(request):
@@ -63,10 +69,17 @@ def airbnb_detail(request):
 
 
 def filter(request):
-    filter1_arg = request.POST.get("filter1")
-    filter2_arg = request.POST.get("filter2")
-    filter3_arg = request.POST.get("filter3")
 
+
+    filter_dict = json.loads((request.body).decode("utf-8"))
+
+    #filter1_arg = request.POST.get("filter1")
+    #filter2_arg = request.POST.get("filter2")
+    #filter3_arg = request.POST.get("filter3")
+    filter1_arg = filter_dict["filter1"]
+    filter2_arg = filter_dict["filter2"]
+    filter3_arg = filter_dict["filter3"]
+    print(filter1_arg)
     # Filter1 ---- Location
     location_choice_list = ['NOT_EXIST', 'Central Region', 'North Region', 'East Region', 'West Region']
     location_index = int(filter1_arg)
@@ -85,7 +98,6 @@ def filter(request):
         filter_result = filter_result.filter(accommodates__lte=10, accommodates__gte=7)
     elif int(filter2_arg) == 4:
         filter_result = filter_result.filter(accommodates__gt=10)
-
     # Filter3 ---- Price
     # $0 -$49
     # $50 -$99
@@ -140,7 +152,7 @@ def recommender(request):
         recommender_by_similarity = []
         for item in recommender_result:
             recommender_by_similarity = appendQuery(recommender_by_similarity, item)
-        final_result = recommender_by_similarity
+        return JsonResponse(recommender_by_similarity)
     elif way == 'als':
         item = als.objects.get(id=user_id)
         recommender_result = listings.objects.filter(
@@ -148,7 +160,7 @@ def recommender(request):
         recommender_by_als = []
         for item in recommender_result:
             recommender_by_als = appendQuery(recommender_by_als, item)
-        final_result = recommender_by_als
+        return JsonResponse(recommender_by_als)
     elif way == 'topic':
         item_lookfortopic = topic_model.objects.get(id=target_id)
         # print(item_lookfortopic.topic1)
@@ -157,9 +169,9 @@ def recommender(request):
         recommender_by_topic = []
         for item in recommender_result:
             recommender_by_topic = appendQuery(recommender_by_topic, item)
-        final_result = recommender_by_topic
+        return JsonResponse(recommender_by_topic)
 
-    return JsonResponse(final_result)
+    return JsonResponse('recommender way not defined')
 
 
 def appendQuery(origin, item):
