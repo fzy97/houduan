@@ -81,10 +81,13 @@ def filter(request):
     filter3_arg = filter_dict["filter3"]
     print(filter1_arg)
     # Filter1 ---- Location
-    location_choice_list = ['NOT_EXIST', 'Central Region', 'North Region', 'East Region', 'West Region']
-    location_index = int(filter1_arg)
-    filter_result = listings.objects.all().filter(neighbourhood_group_cleansed=location_choice_list[location_index])
-
+    if int(filter1_arg) != 0:
+        location_choice_list = ['NOT_EXIST', 'Central Region', 'North Region', 'East Region', 'West Region']
+        location_index = int(filter1_arg)
+        filter_result = listings.objects.all().filter(neighbourhood_group_cleansed=location_choice_list[location_index])
+    else:
+        filter_result = listings.objects.all()
+        
     # Filter2 ---- Accommodates
     # case 1: 1 to 3 People
     # case 2: 4 to 6 People
