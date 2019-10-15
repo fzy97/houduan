@@ -39,15 +39,15 @@ def login(request):
                 if password == user.password:
                     #response = HttpResponseRedirect("/index/")
                     #response.set_cookie("username", user.username)
-                    return JsonResponse('ok')
+                    return JsonResponse('ok',safe=False)
                 else:
-                    return JsonResponse('fail_password')
+                    return JsonResponse('fail_password',safe=False)
             else:
-                return JsonResponse('fail_user')
+                return JsonResponse('fail_user',safe=False)
         else:
-            return JsonResponse('fail_null')
+            return JsonResponse('fail_null',safe=False)
     #return render(request, "login.html", locals())
-    return JsonResponse('fail_request')
+    return JsonResponse('fail_request',safe=False)
 
 
 def logout(request):
@@ -64,7 +64,7 @@ def airbnb_detail(request):
     target_id = request.GET.get("id")
     item = listings.objects.get(id=target_id)
     data = datastructure(item)
-    response = JsonResponse(data)
+    response = JsonResponse(data,safe=False)
     return response
 
 
@@ -122,7 +122,7 @@ def filter(request):
         final_data = appendQuery(final_data, item)
 
     # print(filter_result)
-    return JsonResponse(final_data)
+    return JsonResponse(final_data,safe=False)
 
 
 def hotlist(request):
@@ -131,7 +131,7 @@ def hotlist(request):
         hotlist = listings.objects.all().order_by("-number_of_reviews")
         for item in hotlist[:3]:
             hotlist_data = appendQuery(hotlist_data, item)
-    return JsonResponse(hotlist_data)
+    return JsonResponse(hotlist_data,safe=False)
 
 def latest_booking(request):
     latest_booking_data = []
@@ -139,7 +139,7 @@ def latest_booking(request):
         booking_list = listings.objects.all().order_by("-last_review")
         for item in booking_list[:3]:
             latest_booking_data = appendQuery(latest_booking_data, item)
-    return JsonResponse(latest_booking_data)
+    return JsonResponse(latest_booking_data,safe=False)
 
 def recommender(request):
     target_id = request.GET.get("id")
@@ -152,7 +152,7 @@ def recommender(request):
         recommender_by_similarity = []
         for item in recommender_result:
             recommender_by_similarity = appendQuery(recommender_by_similarity, item)
-        return JsonResponse(recommender_by_similarity)
+        return JsonResponse(recommender_by_similarity,safe=False)
     elif way == 'als':
         item = als.objects.get(id=user_id)
         recommender_result = listings.objects.filter(
@@ -160,7 +160,7 @@ def recommender(request):
         recommender_by_als = []
         for item in recommender_result:
             recommender_by_als = appendQuery(recommender_by_als, item)
-        return JsonResponse(recommender_by_als)
+        return JsonResponse(recommender_by_als,safe=False)
     elif way == 'topic':
         item_lookfortopic = topic_model.objects.get(id=target_id)
         # print(item_lookfortopic.topic1)
@@ -169,9 +169,9 @@ def recommender(request):
         recommender_by_topic = []
         for item in recommender_result:
             recommender_by_topic = appendQuery(recommender_by_topic, item)
-        return JsonResponse(recommender_by_topic)
+        return JsonResponse(recommender_by_topic,safe=False)
 
-    return JsonResponse('recommender way not defined')
+    return JsonResponse('recommender way not defined',safe=False)
 
 
 def appendQuery(origin, item):
