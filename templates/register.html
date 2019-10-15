@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block style %}
+    <link rel="stylesheet" href="/houduan/static/css/register.css">
+{% endblock %}
+
+{% block content %}
+    <p class="label"> 注册 </p>
+    <form class="register_form" method="post">
+        {% csrf_token %}
+        <p>
+            <label>账号</label>
+            <input type="text" name="username">
+        </p>
+        <p>
+            <label>密码</label>
+            <input type="password" name="password">
+        </p>
+        <p>
+            <input class="submit" type="submit" value="注册">
+        </p>
+        <p class="message">{{ result.content }}</p>
+
+    </form>
+{% endblock %}

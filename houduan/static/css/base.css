@@ -1,0 +1,10 @@
+a{
+    text-decoration: none;
+}
+.center{
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    height: 500px;
+    background-color: #1c78cf;
+}
