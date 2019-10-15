@@ -28,4 +28,6 @@ urlpatterns = [
     path('airbnb_detail/', airbnb_detail),
     path('filter/', filter),
     path('recommender/', recommender),
+    path('hotlist/', hotlist),
+    path('latest_booking/', latest_booking)
 ]

@@ -53,6 +53,7 @@ def logout(request):
 def show(request):
     return render(request, 'show.html')
 
+
 def airbnb_detail(request):
     target_id = request.GET.get("id")
     item = listings.objects.get(id=target_id)
@@ -108,9 +109,25 @@ def filter(request):
     for item in filter_result[:9]:
         final_data = appendQuery(final_data, item)
 
-    #print(filter_result)
+    # print(filter_result)
     return JsonResponse(final_data)
 
+
+def hotlist(request):
+    hotlist_data = []
+    if request.method == "GET":
+        hotlist = listings.objects.all().order_by("-number_of_reviews")
+        for item in hotlist[:3]:
+            hotlist_data = appendQuery(hotlist_data, item)
+    return JsonResponse(hotlist_data)
+
+def latest_booking(request):
+    latest_booking_data = []
+    if request.method == "GET":
+        booking_list = listings.objects.all().order_by("-last_review")
+        for item in booking_list[:3]:
+            latest_booking_data = appendQuery(latest_booking_data, item)
+    return JsonResponse(latest_booking_data)
 
 def recommender(request):
     target_id = request.GET.get("id")
@@ -126,14 +143,15 @@ def recommender(request):
         final_result = recommender_by_similarity
     elif way == 'als':
         item = als.objects.get(id=user_id)
-        recommender_result = listings.objects.filter(Q(id=item.listing_id1) | Q(id=item.listing_id2) | Q(id=item.listing_id3))
+        recommender_result = listings.objects.filter(
+            Q(id=item.listing_id1) | Q(id=item.listing_id2) | Q(id=item.listing_id3))
         recommender_by_als = []
         for item in recommender_result:
             recommender_by_als = appendQuery(recommender_by_als, item)
         final_result = recommender_by_als
     elif way == 'topic':
         item_lookfortopic = topic_model.objects.get(id=target_id)
-        #print(item_lookfortopic.topic1)
+        # print(item_lookfortopic.topic1)
         item = topic_reference.objects.get(id=item_lookfortopic.topic1)
         recommender_result = listings.objects.filter(Q(id=item.item1) | Q(id=item.item2) | Q(id=item.item3))
         recommender_by_topic = []
