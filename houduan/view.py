@@ -28,6 +28,7 @@ def login(request):
     result = {"content": ""}
     if request.method == "POST":
         login_dict = json.loads((request.body).decode("utf-8"))
+        print(login_dict)
         username = str(login_dict["username"])
         password = str(login_dict["password"])
         #username = request.POST.get("username")
@@ -69,8 +70,6 @@ def airbnb_detail(request):
 
 
 def filter(request):
-
-
     filter_dict = json.loads((request.body).decode("utf-8"))
 
     #filter1_arg = request.POST.get("filter1")
@@ -79,10 +78,10 @@ def filter(request):
     filter1_arg = filter_dict["filter1"]
     filter2_arg = filter_dict["filter2"]
     filter3_arg = filter_dict["filter3"]
-    print(filter1_arg)
+
     # Filter1 ---- Location
     if int(filter1_arg) != 0:
-        location_choice_list = ['NOT_EXIST', 'Central Region', 'North Region', 'East Region', 'West Region']
+        location_choice_list = ['NOT_EXIST', 'Central Region', 'West Region', 'North-East Region',  'East Region', 'North Region']
         location_index = int(filter1_arg)
         filter_result = listings.objects.all().filter(neighbourhood_group_cleansed=location_choice_list[location_index])
     else:
@@ -190,7 +189,7 @@ def datastructure(item):
         'name': item.name,
         'price': item.price,
         'review_scores_rating': item.review_scores_rating,
-        'neighbourhood_cleansed':item.neighbourhood_cleansed,
+        'neighbourhood_cleansed': item.neighbourhood_cleansed,
         'neighbourhood_group_cleansed': item.neighbourhood_group_cleansed,
         'accommodates': item.accommodates,
         "room_type": item.room_type,
