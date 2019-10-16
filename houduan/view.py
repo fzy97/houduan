@@ -87,7 +87,7 @@ def filter(request):
         filter_result = listings.objects.all().filter(neighbourhood_group_cleansed=location_choice_list[location_index])
     else:
         filter_result = listings.objects.all()
-        
+
     # Filter2 ---- Accommodates
     # case 1: 1 to 3 People
     # case 2: 4 to 6 People
@@ -190,6 +190,7 @@ def datastructure(item):
         'name': item.name,
         'price': item.price,
         'review_scores_rating': item.review_scores_rating,
+        'neighbourhood_cleansed':item.neighbourhood_cleansed,
         'neighbourhood_group_cleansed': item.neighbourhood_group_cleansed,
         'accommodates': item.accommodates,
         "room_type": item.room_type,
