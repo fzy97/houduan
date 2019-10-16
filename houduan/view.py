@@ -175,6 +175,9 @@ def recommender(request):
 
     return JsonResponse('recommender way not defined',safe=False)
 
+def recommender_filter(originObjects):
+    filteredObjects = originObjects
+    return JsonResponse(filteredObjects, safe = False)
 
 def appendQuery(origin, item):
     data = datastructure(item)
