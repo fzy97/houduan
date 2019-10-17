@@ -4,7 +4,8 @@ class topic_reference(models.Model):
     item1 = models.CharField(max_length=255, verbose_name='item1')
     item2 = models.CharField(max_length=255, verbose_name='item2')
     item3 = models.CharField(max_length=255, verbose_name='item3')
-
+    item4 = models.CharField(max_length=255, verbose_name='item4')
+    item5 = models.CharField(max_length=255, verbose_name='item5')
     class Meta:
         db_table = 'topic_reference'
         verbose_name = 'topic_reference'

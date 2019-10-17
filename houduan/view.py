@@ -153,8 +153,7 @@ def recommender(request):
         return JsonResponse(recommender_by_similarity,safe=False)
     elif way == 'als':
         item = als.objects.get(id=user_id)
-        recommender_result = listings.objects.filter(
-            Q(id=item.listing_id1) | Q(id=item.listing_id2) | Q(id=item.listing_id3))
+        recommender_result = listings.objects.filter(Q(id=item.listing_id1) | Q(id=item.listing_id2) | Q(id=item.listing_id3))
         recommender_by_als = []
         for item in recommender_result:
             recommender_by_als = appendQuery(recommender_by_als, item)
@@ -163,6 +162,19 @@ def recommender(request):
         item_lookfortopic = topic_model.objects.get(id=target_id)
         # print(item_lookfortopic.topic1)
         item = topic_reference.objects.get(id=item_lookfortopic.topic1)
+        item_simi = simi.objects.get(id=target_id)
+
+        checksum_topic = int(item.item1) + int(item.item2) + int(item.item3)
+        checksum_simi = int(item_simi.item1) + int(item_simi.item2) + int(item_simi.item3)
+
+        if checksum_simi == checksum_topic :
+            recommender_result = listings.objects.filter(Q(id=item.item3) | Q(id=item.item4) | Q(id=item.item5))
+            recommender_by_topic = []
+            for item in recommender_result:
+                recommender_by_topic = appendQuery(recommender_by_topic, item)
+            return JsonResponse(recommender_by_topic, safe=False)
+
+
         recommender_result = listings.objects.filter(Q(id=item.item1) | Q(id=item.item2) | Q(id=item.item3))
         recommender_by_topic = []
         for item in recommender_result:
