@@ -21,7 +21,7 @@ def register(request):
             return HttpResponseRedirect("/login/")
         else:
             result["content"] = "用户名或者密码不可以为空"
-    return render(request, "register.html", locals())
+    return render(request)
 
 
 def login(request):
@@ -55,10 +55,6 @@ def logout(request):
     response = HttpResponseRedirect("/login/")
     response.delete_cookie("username")
     return response
-
-
-def show(request):
-    return render(request, 'show.html')
 
 
 def airbnb_detail(request):

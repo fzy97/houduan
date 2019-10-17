@@ -21,7 +21,6 @@ from houduan.view import *
 from houduan import view
 
 urlpatterns = [
-    url(r'^$', view.show),  # 页面展示
     path('register/', register),
     path('login/', login),
     path('logout/', logout),
